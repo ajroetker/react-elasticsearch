@@ -85,7 +85,7 @@ export default function ({ children, onChange }) {
                 }
                 // Transform a single field to agg query
                 function aggFromField(field) {
-                  if (typeof field === "string" && field.endsWith(".keyword")) {
+                  if (field?.endsWith?.(".keyword")) {
                     field = field.replace(/\.keyword$/, "");
                   }
                   const t = { field, size };
@@ -121,7 +121,7 @@ export default function ({ children, onChange }) {
                   const map = new Map();
                   fields
                     .map((f) => {
-                      if (typeof f === "string" && f.endsWith(".keyword")) {
+                      if (f?.endsWith?.(".keyword")) {
                         f = f.replace(/\.keyword$/, "");
                       }
                       if (!result.facets || !result.facets[f] || !result.facets[f].terms) {
