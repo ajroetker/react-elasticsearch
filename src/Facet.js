@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { toTermQueries } from "./utils";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({
+export default function ({
   fields,
   id,
   initialValue,
@@ -11,7 +11,7 @@ export default function({
   showFilter = true,
   filterValueModifier,
   itemsPerBlock,
-  items
+  items,
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
   // Current filter (search inside facet value).
@@ -20,7 +20,7 @@ export default function({
   const [size, setSize] = useState(itemsPerBlock || 5);
   // The actual selected items in facet.
   const [value, setValue] = useState(initialValue || []);
-  // Data from internal queries (Elasticsearch queries are performed via Listener)
+  // Data from internal queries (Antfly queries are performed via Listener)
   const { result } = widgets.get(id) || {};
   const data = (result && result.data) || [];
   const total = (result && result.total) || 0;
@@ -34,10 +34,10 @@ export default function({
       needsConfiguration: true,
       isFacet: true,
       wantResults: false,
-      query: { bool: { should: toTermQueries(fields, value) } },
+      query: { should: toTermQueries(fields, value) },
       value,
       configuration: { size, filterValue, fields, filterValueModifier },
-      result: data && total ? { data, total } : null
+      result: data && total ? { data, total } : null,
     });
   }, [size, filterValue, value]);
 
@@ -59,7 +59,7 @@ export default function({
   function handleChange(item, checked) {
     const newValue = checked
       ? [...new Set([...value, item.key])]
-      : value.filter(f => f !== item.key);
+      : value.filter((f) => f !== item.key);
     setValue(newValue);
   }
 
@@ -69,25 +69,25 @@ export default function({
   }
 
   return (
-    <div className="react-es-facet">
+    <div className="react-af-facet">
       {showFilter ? (
         <input
           value={filterValue}
           placeholder={placeholder || "filter…"}
           type="text"
-          onChange={e => {
+          onChange={(e) => {
             setFilterValue(e.target.value);
           }}
         />
       ) : null}
       {items
         ? items(data, { handleChange, isChecked })
-        : data.map(item => (
+        : data.map((item) => (
             <label key={item.key}>
               <input
                 type="checkbox"
                 checked={isChecked(item)}
-                onChange={e => handleChange(item, e.target.checked)}
+                onChange={(e) => handleChange(item, e.target.checked)}
               />
               {item.key} ({item.doc_count})
             </label>

@@ -56,9 +56,11 @@ export default function ({ children, onChange }) {
               const { itemsPerPage, page, sort } = r.configuration;
               msearchData.push({
                 query: {
-                  query: queryFrom(queries),
-                  size: itemsPerPage,
-                  from: (page - 1) * itemsPerPage,
+                  // TODO (ajr) Where should the table name come from?
+                  table: "example",
+                  full_text_search: queryFrom(queries),
+                  limit: itemsPerPage,
+                  offset: (page - 1) * itemsPerPage,
                   sort,
                 },
                 data: (result) => result.hits.hits,
@@ -74,7 +76,7 @@ export default function ({ children, onChange }) {
               const filterValue = f.configuration.filterValue;
               const filterValueModifier = f.configuration.filterValueModifier;
 
-              // Get the aggs (elasticsearch queries) from fields
+              // Get the aggs (antfly queries) from fields
               // Dirtiest part, because we build a raw query from various params
               function aggsFromFields() {
                 // Remove current query from queries list (do not react to self)
@@ -85,20 +87,29 @@ export default function ({ children, onChange }) {
                 }
                 // Transform a single field to agg query
                 function aggFromField(field) {
-                  const t = { field, order: { _count: "desc" }, size };
-                  if (filterValue) {
-                    t.include = !filterValueModifier
-                      ? `.*${filterValue}.*`
-                      : filterValueModifier(filterValue);
-                  }
-                  return { [field]: { terms: t } };
+                  // FIXME (ajr) Can't order by facets in Bleve
+                  // const t = { field, order: { _count: "desc" }, size };
+                  const t = { field, size };
+                  // FIXME (ajr) Bleve does not support aggs with a regexp
+                  // if (filterValue) {
+                  //   t.include = !filterValueModifier
+                  //     ? `.*${filterValue}.*`
+                  //     : filterValueModifier(filterValue);
+                  // }
+                  // return { [field]: { terms: t } };
                 }
                 // Actually build the query from fields
                 let result = {};
                 fields.forEach((f) => {
                   result = { ...result, ...aggFromField(f) };
                 });
-                return { query: queryFrom(withoutOwnQueries()), size: 0, aggs: result };
+                return {
+                  // TODO (ajr) Where should the table name come from?
+                  table: "example",
+                  full_text_search: queryFrom(withoutOwnQueries()),
+                  size: 0,
+                  facets: result,
+                };
               }
               msearchData.push({
                 query: aggsFromFields(),

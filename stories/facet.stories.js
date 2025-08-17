@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Elasticsearch, SearchBox, Results, Facet } from "../src";
+import { Antfly, SearchBox, Results, Facet } from "../src";
 import { url } from "./utils";
 
 export default {
@@ -35,12 +35,12 @@ function CollapsableFacet({ initialCollapsed, title, ...rest }) {
 
 export const Collapsable = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <SearchBox id="main" fields={["TICO"]} />
       <CollapsableFacet id="autr" fields={["AUTR.keyword"]} />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source: s, _id }) => (
             <div key={_id}>
               {s.TICO} - {s.AUTR}
@@ -49,13 +49,13 @@ export const Collapsable = () => {
         }
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const Customized = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <Facet
         seeMore="SEE MORE CUSTOM"
         placeholder="MY PLACEHOLDER"
@@ -65,7 +65,7 @@ export const Customized = () => {
       />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id, _score }) => (
             <div key={_id}>
               {_source.TICO} - score: {_score}
@@ -73,22 +73,22 @@ export const Customized = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const ModifyFilterValue = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <Facet
-        filterValueModifier={v => `${v}.*`}
+        filterValueModifier={(v) => `${v}.*`}
         placeholder="type first letters"
         id="autr"
         fields={["AUTR.keyword"]}
       />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id, _score }) => (
             <div key={_id}>
               {_source.TICO} - score: {_score}
@@ -96,19 +96,19 @@ export const ModifyFilterValue = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const FacetWithCustomRenderItems = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <SearchBox id="main" fields={["TICO"]} />
       <Facet
         id="autr"
         fields={["AUTR.keyword"]}
         items={(data, { handleChange, isChecked }) => {
-          return data.map(item => (
+          return data.map((item) => (
             <div
               style={{ color: isChecked(item) ? "green" : "black" }}
               onClick={() => handleChange(item, !isChecked(item))}
@@ -121,7 +121,7 @@ export const FacetWithCustomRenderItems = () => {
       />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source: s, _id }) => (
             <div key={_id}>
               {s.TICO} - {s.AUTR}
@@ -130,6 +130,6 @@ export const FacetWithCustomRenderItems = () => {
         }
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

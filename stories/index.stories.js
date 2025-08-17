@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import {
-  Elasticsearch,
+  Antfly,
   SearchBox,
   Facet,
   Results,
   ActiveFilters,
   toUrlQueryString,
-  fromUrlQueryString
+  fromUrlQueryString,
 } from "../src";
 import { customQuery, customQueryMovie, url } from "./utils";
 
 export default {
-  title: "Elasticsearch",
-  component: Elasticsearch,
+  title: "Antfly",
+  component: Antfly,
 };
 
 export const BasicUsage = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <SearchBox id="main" customQuery={customQuery} />
       <div style={{ display: "inline-block" }}>
         <Facet id="author" fields={["AUTR.keyword"]} />
@@ -27,7 +27,7 @@ export const BasicUsage = () => {
       </div>
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _score, _id }) => (
             <div key={_id}>
               <b>{_source.TICO}</b> - score: {_score}
@@ -35,7 +35,7 @@ export const BasicUsage = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
@@ -44,9 +44,9 @@ export const WithUrlParams = () => {
 
   const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
   return (
-    <Elasticsearch
+    <Antfly
       url={url}
-      onChange={values => {
+      onChange={(values) => {
         setQueryString(toUrlQueryString(values));
       }}
     >
@@ -58,24 +58,24 @@ export const WithUrlParams = () => {
       <Results
         id="result"
         initialPage={initialValues.get("resultPage")}
-        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const MovieDatabase = () => {
   return (
-    <Elasticsearch
+    <Antfly
       url={"https://scalr.api.appbase.io/react-elasticsearch-films"}
       headers={{
-        Authorization: "Basic " + window.btoa("Qq38oEj7D:a23804f8-f0c4-4dea-9a55-67739275e588")
+        Authorization: "Basic " + window.btoa("Qq38oEj7D:a23804f8-f0c4-4dea-9a55-67739275e588"),
       }}
     >
       <SearchBox id="main" customQuery={customQueryMovie} />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _score, _id }) => (
             <div key={_id}>
               <img src={_source.poster_path} alt={_source.original_title} />
@@ -87,6 +87,6 @@ export const MovieDatabase = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

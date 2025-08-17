@@ -5,7 +5,7 @@ import {
   defaultCombinators,
   mergedQueries,
   uuidv4,
-  withUniqueKey
+  withUniqueKey,
 } from "./utils";
 import Rule from "./Rule";
 
@@ -16,7 +16,7 @@ export default function QueryBuilder({
   templateRule,
   initialValue,
   id,
-  autoComplete
+  autoComplete,
 }) {
   const [, dispatch] = useSharedContext();
   operators = operators || defaultOperators;
@@ -26,16 +26,16 @@ export default function QueryBuilder({
     operator: operators[0].value,
     value: "",
     combinator: "AND",
-    index: 0
+    index: 0,
   };
   const [rules, setRules] = useState(withUniqueKey(initialValue || [templateRule]));
 
   useEffect(() => {
     const queries = mergedQueries(
-      rules.map(r => ({
+      rules.map((r) => ({
         ...r,
-        query: operators.find(o => o.value === r.operator).query(r.field, r.value)
-      }))
+        query: operators.find((o) => o.value === r.operator).query(r.field, r.value),
+      })),
     );
     dispatch({
       type: "setWidget",
@@ -45,15 +45,15 @@ export default function QueryBuilder({
       isFacet: false,
       wantResults: false,
       query: { bool: queries },
-      value: rules.map(r => ({
+      value: rules.map((r) => ({
         field: r.field,
         operator: r.operator,
         value: r.value,
         combinator: r.combinator,
-        index: r.index
+        index: r.index,
       })),
       configuration: null,
-      result: null
+      result: null,
     });
   }, [JSON.stringify(rules)]);
 
@@ -61,8 +61,8 @@ export default function QueryBuilder({
   useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
 
   return (
-    <div className="react-es-query-builder">
-      {rules.map(rule => (
+    <div className="react-af-query-builder">
+      {rules.map((rule) => (
         <Rule
           combinator={rule.combinator}
           field={rule.field}
@@ -77,15 +77,15 @@ export default function QueryBuilder({
           onAdd={() => {
             setRules([...rules, { ...templateRule, index: rules.length, key: uuidv4() }]);
           }}
-          onDelete={index => {
+          onDelete={(index) => {
             setRules(
               rules
-                .filter(e => e.index !== index)
-                .filter(e => e)
-                .map((v, k) => ({ ...v, index: k }))
+                .filter((e) => e.index !== index)
+                .filter((e) => e)
+                .map((v, k) => ({ ...v, index: k })),
             );
           }}
-          onChange={r => {
+          onChange={(r) => {
             rules[r.index] = { ...r, key: rules[r.index].key };
             setRules([...rules]);
           }}

@@ -1,16 +1,16 @@
-# React Elasticsearch
+# React Antfly
 
-[![Version](https://img.shields.io/npm/v/react-elasticsearch.svg)](https://npmjs.org/package/react-elasticsearch)
-[![Downloads](https://img.shields.io/npm/dt/react-elasticsearch.svg)](https://npmjs.org/package/react-elasticsearch)
-[![License](https://img.shields.io/npm/l/react-elasticsearch.svg)](https://github.com/rap2hpoutre/react-elasticsearch/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/react-antfly.svg)](https://npmjs.org/package/react-antfly)
+[![Downloads](https://img.shields.io/npm/dt/react-antfly.svg)](https://npmjs.org/package/react-antfly)
+[![License](https://img.shields.io/npm/l/react-antfly.svg)](https://github.com/rap2hpoutre/react-antfly/blob/master/package.json)
 
-UI components for React + Elasticsearch. Create search applications using declarative components.
+UI components for React + Antfly. Create search applications using declarative components.
 ## Usage
 **👉 [Documentation and playable demo available here](https://react-elasticsearch.raph.site/).**
 
 ```jsx
 const MySearchComponent = () => (
-  <Elasticsearch url="http://example.org/search">
+  <Antfly url="http://example.org/search">
     <SearchBox id="mainSearch" fields={["title"]} />
     <Facet id="actors" fields={["actors"]} />
     <Facet id="releasedYear" fields={["releasedYear"]} />
@@ -21,15 +21,15 @@ const MySearchComponent = () => (
         data.map(item => <MyCardItem key={item._id} source={item._source} />)
       }
     />
-  </Elasticsearch>
+  </Antfly>
 );
 ```
 
 ## Install
 
 ```
-npm i react-elasticsearch
-yarn add react-elasticsearch
+npm i react-antfly
+yarn add react-antfly
 ```
 
 ## Develop
@@ -63,4 +63,4 @@ But since it helped us building a search experiences, it has been released. Hope
 
 ## Contributing
 
-Open issues and PR here: https://github.com/betagouv/react-elasticsearch
+Open issues and PR here: https://github.com/betagouv/react-antfly

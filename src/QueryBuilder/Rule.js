@@ -17,11 +17,11 @@ export default function Rule({ fields, operators, combinators, ...props }) {
 
   const combinatorElement = props.index ? (
     <select
-      className="react-es-rule-combinator"
+      className="react-af-rule-combinator"
       value={combinator}
-      onChange={e => setCombinator(e.target.value)}
+      onChange={(e) => setCombinator(e.target.value)}
     >
-      {combinators.map(c => (
+      {combinators.map((c) => (
         <option key={c.value} value={c.value}>
           {c.text}
         </option>
@@ -30,13 +30,13 @@ export default function Rule({ fields, operators, combinators, ...props }) {
   ) : null;
 
   const deleteButton = props.index ? (
-    <button className="react-es-rule-delete" onClick={() => props.onDelete(props.index)}>
+    <button className="react-af-rule-delete" onClick={() => props.onDelete(props.index)}>
       x
     </button>
   ) : null;
 
   let input = null;
-  if (operators.find(o => o.value === operator && o.useInput)) {
+  if (operators.find((o) => o.value === operator && o.useInput)) {
     // Autocomplete zone.
     if (props.autoComplete && !Array.isArray(field)) {
       input = (
@@ -44,7 +44,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
           suggestions={suggestions}
           onSuggestionsFetchRequested={async ({ value }) => {
             let query;
-            const suggestionQuery = operators.find(o => o.value === operator).suggestionQuery;
+            const suggestionQuery = operators.find((o) => o.value === operator).suggestionQuery;
             if (suggestionQuery) {
               query = suggestionQuery(field, value);
             } else {
@@ -52,37 +52,37 @@ export default function Rule({ fields, operators, combinators, ...props }) {
               query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
             }
             const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
-            setSuggestions(suggestions.responses[0].aggregations[field].buckets.map(e => e.key));
+            setSuggestions(suggestions.responses[0].aggregations[field].buckets.map((e) => e.key));
           }}
           onSuggestionsClearRequested={() => setSuggestions([])}
-          getSuggestionValue={suggestion => suggestion}
-          renderSuggestion={suggestion => <div>{suggestion}</div>}
+          getSuggestionValue={(suggestion) => suggestion}
+          renderSuggestion={(suggestion) => <div>{suggestion}</div>}
           inputProps={{
             value,
             onChange: (event, { newValue }) => setValue(newValue),
-            className: "react-es-rule-value",
-            autoComplete: "new-password"
+            className: "react-af-rule-value",
+            autoComplete: "new-password",
           }}
         />
       );
     } else {
       input = (
         <input
-          className="react-es-rule-value"
+          className="react-af-rule-value"
           value={value}
           autoComplete="new-password"
-          onChange={e => setValue(e.target.value)}
+          onChange={(e) => setValue(e.target.value)}
         />
       );
     }
   }
   return (
-    <div className="react-es-rule">
+    <div className="react-af-rule">
       {combinatorElement}
       <select
-        className="react-es-rule-field"
-        value={fields.findIndex(e => String(e.value) === String(field))}
-        onChange={e => setField(fields[e.target.value].value)}
+        className="react-af-rule-field"
+        value={fields.findIndex((e) => String(e.value) === String(field))}
+        onChange={(e) => setField(fields[e.target.value].value)}
       >
         {fields.map((f, k) => {
           return (
@@ -93,11 +93,11 @@ export default function Rule({ fields, operators, combinators, ...props }) {
         })}
       </select>
       <select
-        className="react-es-rule-operator"
+        className="react-af-rule-operator"
         value={operator}
-        onChange={e => setOperator(e.target.value)}
+        onChange={(e) => setOperator(e.target.value)}
       >
-        {operators.map(o => {
+        {operators.map((o) => {
           return (
             <option key={o.value} value={o.value}>
               {o.text}
@@ -106,7 +106,7 @@ export default function Rule({ fields, operators, combinators, ...props }) {
         })}
       </select>
       {input}
-      <button className="react-es-rule-add" onClick={props.onAdd}>
+      <button className="react-af-rule-add" onClick={props.onAdd}>
         +
       </button>
       {deleteButton}

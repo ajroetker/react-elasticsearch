@@ -1,5 +1,5 @@
 import React from "react";
-import { Elasticsearch, SearchBox, Results, CustomWidget } from "../src";
+import { Antfly, SearchBox, Results, CustomWidget } from "../src";
 import { url } from "./utils";
 
 export default {
@@ -10,7 +10,7 @@ export default {
 function MyComponent({ ctx }) {
   let query;
   if (ctx.widgets.get("main")) {
-    query = ctx.widgets.get("main").query
+    query = ctx.widgets.get("main").query;
   } else {
     query = "";
   }
@@ -19,22 +19,16 @@ function MyComponent({ ctx }) {
 
 export const Active = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <SearchBox id="main" fields={["AUTR"]} />
       <CustomWidget>
         <MyComponent />
       </CustomWidget>
       <Results
         id="result"
-        items={data =>
-          data.map(({ _source: s, _id }) => (
-            <div key={_id}>
-              {s.TICO}
-            </div>
-          ))
-        }
+        items={(data) => data.map(({ _source: s, _id }) => <div key={_id}>{s.TICO}</div>)}
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

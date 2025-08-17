@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Elasticsearch, QueryBuilder, Results, fromUrlQueryString, toUrlQueryString } from "../src";
+import { Antfly, QueryBuilder, Results, fromUrlQueryString, toUrlQueryString } from "../src";
 import { url } from "./utils";
 
 export default {
@@ -9,19 +9,19 @@ export default {
 
 export const Simple = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} />
       <Results
         id="result"
-        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const AutoComplete = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <QueryBuilder
         id="qb"
         fields={[{ value: "AUTR.keyword", text: "Author" }]}
@@ -29,14 +29,14 @@ export const AutoComplete = () => {
       />
       <Results
         id="result"
-        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const CustomQueryAndOperators = () => {
-  const regexify = v =>
+  const regexify = (v) =>
     `.*${v
       .replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
       .replace(/([A-Z])/gi, (_w, x) => `[${x.toUpperCase()}${x.toLowerCase()}]`)}.*`;
@@ -51,13 +51,13 @@ export const CustomQueryAndOperators = () => {
           query: { match_all: {} },
           aggs: {
             [field]: {
-              terms: { field, include: regexify(value), order: { _count: "desc" }, size: 10 }
-            }
+              terms: { field, include: regexify(value), order: { _count: "desc" }, size: 10 },
+            },
           },
-          size: 0
+          size: 0,
         };
-      }
-    }
+      },
+    },
   ];
   return (
     <Elasticsearch url={url}>
@@ -69,7 +69,7 @@ export const CustomQueryAndOperators = () => {
       />
       <Results
         id="result"
-        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
     </Elasticsearch>
   );
@@ -82,13 +82,13 @@ export const MultipleFields = () => {
         id="qb"
         fields={[
           { value: "AUTR.keyword", text: "Author" },
-          { value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }
+          { value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" },
         ]}
         autoComplete={true}
       />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id }) => (
             <div key={_id}>
               {_source.AUTR} - {_source.TICO}
@@ -108,9 +108,9 @@ export const ListenChangesWithUrlParams = () => {
   );
 
   return (
-    <Elasticsearch
+    <Antfly
       url={url}
-      onChange={values => {
+      onChange={(values) => {
         setQueryString(toUrlQueryString(values));
       }}
     >
@@ -118,12 +118,15 @@ export const ListenChangesWithUrlParams = () => {
       <QueryBuilder
         initialValue={initialValues.get("qb")}
         id="qb"
-        fields={[{ value: "x", text: "Should not be selected" }, { value: "AUTR.keyword", text: "Author" }]}
+        fields={[
+          { value: "x", text: "Should not be selected" },
+          { value: "AUTR.keyword", text: "Author" },
+        ]}
       />
       <Results
         id="result"
-        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+        items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { Elasticsearch, SearchBox, Results, ActiveFilters, Facet } from "../src";
+import { Antfly, SearchBox, Results, ActiveFilters, Facet } from "../src";
 import { url } from "./utils";
 import "../src/style.css";
 
@@ -10,7 +10,7 @@ export default {
 
 export const Active = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <h1>Display active filters</h1>
       <pre>{`<ActiveFilters id="active-filters" />`}</pre>
       Active Filters:
@@ -19,7 +19,7 @@ export const Active = () => {
       <Facet id="autr" fields={["AUTR.keyword"]} initialValue={["auteur inconnu"]} />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source: s, _id }) => (
             <div key={_id}>
               {s.TICO} - {s.AUTR}
@@ -28,13 +28,13 @@ export const Active = () => {
         }
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const ActiveFilterChangeComponentOrder = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <h1>Active filter (change component order)</h1>
       <Facet id="autr" fields={["AUTR.keyword"]} />
       Recherche:
@@ -43,7 +43,7 @@ export const ActiveFilterChangeComponentOrder = () => {
       <ActiveFilters id="af" />
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source: s, _id }) => (
             <div key={_id}>
               {s.TICO} - {s.AUTR}
@@ -51,6 +51,6 @@ export const ActiveFilterChangeComponentOrder = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

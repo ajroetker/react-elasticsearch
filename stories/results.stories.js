@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Elasticsearch, Results } from "../src";
+import { Antfly, Results } from "../src";
 import { url } from "./utils";
 
 export default {
@@ -9,10 +9,10 @@ export default {
 
 export const Vanilla = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id, _score }) => (
             <div key={_id}>
               <b>{_source.TICO}</b> - score: {_score} - id: {_id}
@@ -20,16 +20,16 @@ export const Vanilla = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const WithCustomPagination = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id, _score }) => (
             <div key={_id}>
               <b>{_source.TICO}</b> - score: {_score} - id: {_id}
@@ -42,7 +42,7 @@ export const WithCustomPagination = () => {
           </div>
         )}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
@@ -51,14 +51,14 @@ export const WithCustomStats = () => {
     <Elasticsearch url={url}>
       <Results
         id="result"
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id, _score }) => (
             <div key={_id}>
               <b>{_source.TICO}</b> - score: {_score} - id: {_id}
             </div>
           ))
         }
-        stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
+        stats={(total) => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
       />
     </Elasticsearch>
   );
@@ -74,23 +74,23 @@ export const SortableDmisDesc = () => {
   }, [sortKey, sortOrder]);
 
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       Sort by:{" "}
-      <select onChange={e => setSortKey(e.target.value)} value={sortKey}>
-        {["AUTR.keyword", "DMIS.keyword", "DMAJ.keyword", "TICO.keyword"].map(e => (
+      <select onChange={(e) => setSortKey(e.target.value)} value={sortKey}>
+        {["AUTR.keyword", "DMIS.keyword", "DMAJ.keyword", "TICO.keyword"].map((e) => (
           <option key={e} value={e}>
             {e.replace(".keyword", "")}
           </option>
         ))}
       </select>
-      <select onChange={e => setSortOrder(e.target.value)} value={sortOrder}>
+      <select onChange={(e) => setSortOrder(e.target.value)} value={sortOrder}>
         <option value="asc">asc</option>
         <option value="desc">desc</option>
       </select>
       <Results
         id="result"
         sort={sortQuery}
-        items={data =>
+        items={(data) =>
           data.map(({ _source, _id }) => (
             <div key={_id}>
               {_source.DMIS} - {_source.TICO.substr(0, 50)}
@@ -98,6 +98,6 @@ export const SortableDmisDesc = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

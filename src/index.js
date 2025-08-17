@@ -1,4 +1,4 @@
-import Elasticsearch from "./Elasticsearch";
+import Antfly from "./Antfly";
 import Results from "./Results";
 import SearchBox from "./SearchBox";
 import Facet from "./Facet";
@@ -10,7 +10,7 @@ import CustomWidget from "./CustomWidget";
 import { fromUrlQueryString, toUrlQueryString, msearch } from "./utils";
 
 export {
-  Elasticsearch,
+  Antfly,
   Results,
   SearchBox,
   Facet,
@@ -21,5 +21,5 @@ export {
   ActiveFilters,
   QueryBuilder,
   CustomWidget,
-  msearch
+  msearch,
 };

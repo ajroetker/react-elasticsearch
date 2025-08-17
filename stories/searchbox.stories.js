@@ -1,5 +1,5 @@
 import React from "react";
-import { Elasticsearch, SearchBox, Results } from "../src";
+import { Antfly, SearchBox, Results } from "../src";
 import { customQuery, url } from "./utils";
 
 export default {
@@ -9,7 +9,7 @@ export default {
 
 export const WithDefaultQuery = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <h1>Search on AUTR field</h1>
       <pre>{`<SearchBox id="main" fields={["AUTR"]} />`}</pre>
       <SearchBox id="main" fields={["AUTR"]} />
@@ -24,13 +24,13 @@ export const WithDefaultQuery = () => {
         }
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const WithCustomQuery = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <h1>Search on TICO field with custom query</h1>
       <pre>{`<SearchBox id="main" customQuery={customQuery} />`}</pre>
       <SearchBox id="main" customQuery={customQuery} />
@@ -39,6 +39,6 @@ export const WithCustomQuery = () => {
         items={(data) => data.map(({ _source: s, _id }) => <div key={_id}>{s.TICO}</div>)}
         pagination={() => <></>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };

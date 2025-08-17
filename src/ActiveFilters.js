@@ -1,13 +1,13 @@
 import React from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function({ items }) {
+export default function ({ items }) {
   const [{ widgets }, dispatch] = useSharedContext();
   const activeFilters = [...widgets]
     .filter(([, v]) => (Array.isArray(v.value) ? v.value.length : v.value))
     .map(([k, v]) => ({
       key: k,
-      value: Array.isArray(v.value) ? v.value.join(", ") : v.value
+      value: Array.isArray(v.value) ? v.value.join(", ") : v.value,
     }));
 
   // On filter remove, update widget properties.
@@ -17,12 +17,12 @@ export default function({ items }) {
       type: "setWidget",
       key: id,
       ...widget,
-      value: widget.isFacet ? [] : ""
+      value: widget.isFacet ? [] : "",
     });
   }
 
   return (
-    <div className="react-es-active-filters">
+    <div className="react-af-active-filters">
       {items ? (
         items(activeFilters, removeFilter)
       ) : (
