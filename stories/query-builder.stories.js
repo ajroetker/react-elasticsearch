@@ -60,7 +60,7 @@ export const CustomQueryAndOperators = () => {
     },
   ];
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <QueryBuilder
         id="qb"
         fields={[{ value: "AUTR.keyword", text: "Author" }]}
@@ -71,13 +71,13 @@ export const CustomQueryAndOperators = () => {
         id="result"
         items={(data) => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 
 export const MultipleFields = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <QueryBuilder
         id="qb"
         fields={[
@@ -96,7 +96,7 @@ export const MultipleFields = () => {
           ))
         }
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 

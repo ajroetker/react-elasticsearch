@@ -35,7 +35,7 @@ export default function QueryBuilder({
       rules.map((r) => ({
         ...r,
         query: operators.find((o) => o.value === r.operator).query(r.field, r.value),
-      })),
+      }))
     );
     dispatch({
       type: "setWidget",
@@ -44,7 +44,7 @@ export default function QueryBuilder({
       needsConfiguration: false,
       isFacet: false,
       wantResults: false,
-      query: { bool: queries },
+      query: queries,
       value: rules.map((r) => ({
         field: r.field,
         operator: r.operator,
@@ -82,7 +82,7 @@ export default function QueryBuilder({
               rules
                 .filter((e) => e.index !== index)
                 .filter((e) => e)
-                .map((v, k) => ({ ...v, index: k })),
+                .map((v, k) => ({ ...v, index: k }))
             );
           }}
           onChange={(r) => {

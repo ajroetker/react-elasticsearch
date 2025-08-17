@@ -21,7 +21,11 @@ export default function ({ customQuery, fields, id, initialValue, placeholder })
     if (customQuery) {
       return customQuery(query);
     } else if (fields) {
-      return query ? { multi_match: { query, type: "phrase", fields } } : { match_all: {} };
+      const termQueries = [];
+      fields.forEach((field) => {
+        termQueries.push({ match: query, field });
+      });
+      return query ? { disjuncts: termQueries } : { match_all: {} };
     }
     return { match_all: {} };
   }

@@ -67,7 +67,7 @@ export const WithUrlParams = () => {
 export const MovieDatabase = () => {
   return (
     <Antfly
-      url={"https://scalr.api.appbase.io/react-elasticsearch-films"}
+      url={"https://localhost:8080/table/movies/query"}
       headers={{
         Authorization: "Basic " + window.btoa("Qq38oEj7D:a23804f8-f0c4-4dea-9a55-67739275e588"),
       }}

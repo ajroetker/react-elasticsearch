@@ -48,7 +48,7 @@ export const WithCustomPagination = () => {
 
 export const WithCustomStats = () => {
   return (
-    <Elasticsearch url={url}>
+    <Antfly url={url}>
       <Results
         id="result"
         items={(data) =>
@@ -60,7 +60,7 @@ export const WithCustomStats = () => {
         }
         stats={(total) => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
       />
-    </Elasticsearch>
+    </Antfly>
   );
 };
 

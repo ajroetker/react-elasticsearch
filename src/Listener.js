@@ -72,7 +72,7 @@ export default function ({ children, onChange }) {
               const fields = f.configuration.fields;
               const size = f.configuration.size;
               const filterValue = f.configuration.filterValue;
-              const filterValueModifier = f.configuration.filterValueModifier;
+              // const filterValueModifier = f.configuration.filterValueModifier;
 
               // Get the aggs (antfly queries) from fields
               // Dirtiest part, because we build a raw query from various params
@@ -85,16 +85,21 @@ export default function ({ children, onChange }) {
                 }
                 // Transform a single field to agg query
                 function aggFromField(field) {
+                  if (typeof field === "string" && field.endsWith(".keyword")) {
+                    field = field.replace(/\.keyword$/, "");
+                  }
+                  const t = { field, size };
+
                   // FIXME (ajr) Can't order by facets in Bleve
                   // const t = { field, order: { _count: "desc" }, size };
-                  const t = { field, size };
+
                   // FIXME (ajr) Bleve does not support aggs with a regexp
                   // if (filterValue) {
                   //   t.include = !filterValueModifier
                   //     ? `.*${filterValue}.*`
                   //     : filterValueModifier(filterValue);
                   // }
-                  // return { [field]: { terms: t } };
+                  return { [field]: t };
                 }
                 // Actually build the query from fields
                 let result = {};
@@ -115,14 +120,27 @@ export default function ({ children, onChange }) {
                   // then sort and slice to get only 10 first.
                   const map = new Map();
                   fields
-                    .map((f) => result.aggregations[f].buckets)
+                    .map((f) => {
+                      if (typeof f === "string" && f.endsWith(".keyword")) {
+                        f = f.replace(/\.keyword$/, "");
+                      }
+                      if (!result.facets || !result.facets[f] || !result.facets[f].terms) {
+                        return [];
+                      }
+                      // If the terms doesn't match the filterValue
+                      // then skip it as well
+                      if (filterValue) {
+                        return result.facets[f].terms.filter((i) =>
+                          i.term.toLowerCase().includes(filterValue.toLowerCase())
+                        );
+                      }
+                      return result.facets[f].terms;
+                    })
                     .reduce((a, b) => a.concat(b))
                     .forEach((i) => {
-                      map.set(i.key, {
-                        key: i.key,
-                        doc_count: map.has(i.key)
-                          ? i.doc_count + map.get(i.key).doc_count
-                          : i.doc_count,
+                      map.set(i.term, {
+                        key: i.term,
+                        doc_count: map.has(i.term) ? i.count + map.get(i.term).doc_count : i.count,
                       });
                     });
                   return [...map.values()].sort((x, y) => y.doc_count - x.doc_count).slice(0, size);
@@ -143,6 +161,7 @@ export default function ({ children, onChange }) {
                     console.error(response.error.reason);
                     return;
                   }
+
                   widget.result = {
                     data: msearchData[key].data(response),
                     total: msearchData[key].total(response),

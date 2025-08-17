@@ -34,7 +34,7 @@ export default function ({
       needsConfiguration: true,
       isFacet: true,
       wantResults: false,
-      query: { should: toTermQueries(fields, value) },
+      query: { disjuncts: toTermQueries(fields, value) },
       value,
       configuration: { size, filterValue, fields, filterValueModifier },
       result: data && total ? { data, total } : null,
@@ -43,17 +43,32 @@ export default function ({
 
   // If widget value was updated elsewhere (ex: from active filters deletion)
   // We have to update and dispatch the component.
+  // useEffect(() => {
+  //   widgets.get(id) && setValue(widgets.get(id).value);
+  // }, [isValueReady()]);
+  //
+  // The original useEffect with isValueReady() in the dependency array
+  // was causing the effect to run on every render,  constantly resetting the
+  // local state back to the widget's value and preventing the
+  // checkbox selection from persisting.
+  //
+  // The new approach only syncs the local state when the widget's actual value
+  // changes from external sources (like active filter removal), which is
+  // what was intended.
   useEffect(() => {
-    widgets.get(id) && setValue(widgets.get(id).value);
-  }, [isValueReady()]);
+    const widget = widgets.get(id);
+    if (widget && widget.value !== value) {
+      setValue(widget.value);
+    }
+  }, [widgets.get(id)?.value]);
 
   // Destroy widget from context (remove from the list to unapply its effects)
   useEffect(() => () => dispatch({ type: "deleteWidget", key: id }), []);
 
   // Checks if widget value is the same as actual value.
-  function isValueReady() {
-    return !widgets.get(id) || widgets.get(id).value == value;
-  }
+  //function isValueReady() {
+  //  return !widgets.get(id) || widgets.get(id).value === value;
+  //}
 
   // On checkbox status change, add or remove current agg to selected
   function handleChange(item, checked) {

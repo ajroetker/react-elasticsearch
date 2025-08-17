@@ -2,7 +2,7 @@ export function customQuery(query) {
   if (!query) {
     return { match_all: {} };
   }
-  return { multi_match: { query, type: "phrase", fields: ["TICO"] } };
+  return { disjuncts: [{ match: query, field: "TICO" }] };
 }
 
 export function customQueryMovie(query) {
@@ -10,12 +10,15 @@ export function customQueryMovie(query) {
     return { match_all: {} };
   }
   return {
-    bool: {
-      should: [
-        { multi_match: { query, type: "phrase", fields: ["overview", "original_title"] } },
-        { multi_match: { query, type: "phrase_prefix", fields: ["original_title"] } },
-      ],
-    },
+    should: [
+      {
+        disjuncts: [
+          { match: query, field: "original_title" },
+          { match: query, field: "overview" },
+        ],
+      },
+      { disjuncts: [{ prefix: query, field: "original_title" }] },
+    ],
   };
 }
 
