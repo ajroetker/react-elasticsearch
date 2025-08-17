@@ -1,7 +1,11 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { Elasticsearch, SearchBox, Results, CustomWidget } from "../src";
 import { url } from "./utils";
+
+export default {
+  title: "CustomWidget",
+  component: CustomWidget,
+};
 
 function MyComponent({ ctx }) {
   let query;
@@ -13,7 +17,7 @@ function MyComponent({ ctx }) {
   return <div>Main query : {JSON.stringify(query)}</div>;
 }
 
-storiesOf("CustomWidget", module).add("active", () => {
+export const Active = () => {
   return (
     <Elasticsearch url={url}>
       <SearchBox id="main" fields={["AUTR"]} />
@@ -33,4 +37,4 @@ storiesOf("CustomWidget", module).add("active", () => {
       />
     </Elasticsearch>
   );
-});
+};

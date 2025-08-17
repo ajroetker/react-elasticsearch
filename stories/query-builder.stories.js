@@ -1,101 +1,106 @@
 import React, { useState } from "react";
-import { storiesOf } from "@storybook/react";
 import { Elasticsearch, QueryBuilder, Results, fromUrlQueryString, toUrlQueryString } from "../src";
 import { url } from "./utils";
 
-storiesOf("QueryBuilder", module)
-  .add("simple", () => {
-    return (
-      <Elasticsearch url={url}>
-        <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} />
-        <Results
-          id="result"
-          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("autoComplete", () => {
-    return (
-      <Elasticsearch url={url}>
-        <QueryBuilder
-          id="qb"
-          fields={[{ value: "AUTR.keyword", text: "Author" }]}
-          autoComplete={true}
-        />
-        <Results
-          id="result"
-          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("custom query and operators", () => {
-    const regexify = v =>
-      `.*${v
-        .replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
-        .replace(/([A-Z])/gi, (_w, x) => `[${x.toUpperCase()}${x.toLowerCase()}]`)}.*`;
-    const operators = [
-      {
-        value: "==",
-        text: "contains (case insensitive)",
-        useInput: true,
-        query: (key, value) => (value ? { regexp: { [key]: regexify(value) } } : null),
-        suggestionQuery: (field, value) => {
-          return {
-            query: { match_all: {} },
-            aggs: {
-              [field]: {
-                terms: { field, include: regexify(value), order: { _count: "desc" }, size: 10 }
-              }
-            },
-            size: 0
-          };
-        }
-      }
-    ];
-    return (
-      <Elasticsearch url={url}>
-        <QueryBuilder
-          id="qb"
-          fields={[{ value: "AUTR.keyword", text: "Author" }]}
-          autoComplete={true}
-          operators={operators}
-        />
-        <Results
-          id="result"
-          items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("multiple fields", () => {
-    return (
-      <Elasticsearch url={url}>
-        <QueryBuilder
-          id="qb"
-          fields={[
-            { value: "AUTR.keyword", text: "Author" },
-            { value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }
-          ]}
-          autoComplete={true}
-        />
-        <Results
-          id="result"
-          items={data =>
-            data.map(({ _source, _id }) => (
-              <div key={_id}>
-                {_source.AUTR} - {_source.TICO}
-              </div>
-            ))
-          }
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("listen changes (with url params)", () => <WithUrlParams />);
+export default {
+  title: "QueryBuilder",
+  component: QueryBuilder,
+};
 
-function WithUrlParams() {
+export const Simple = () => {
+  return (
+    <Elasticsearch url={url}>
+      <QueryBuilder id="qb" fields={[{ value: "AUTR.keyword", text: "Author" }]} />
+      <Results
+        id="result"
+        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+      />
+    </Elasticsearch>
+  );
+};
+
+export const AutoComplete = () => {
+  return (
+    <Elasticsearch url={url}>
+      <QueryBuilder
+        id="qb"
+        fields={[{ value: "AUTR.keyword", text: "Author" }]}
+        autoComplete={true}
+      />
+      <Results
+        id="result"
+        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+      />
+    </Elasticsearch>
+  );
+};
+
+export const CustomQueryAndOperators = () => {
+  const regexify = v =>
+    `.*${v
+      .replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&")
+      .replace(/([A-Z])/gi, (_w, x) => `[${x.toUpperCase()}${x.toLowerCase()}]`)}.*`;
+  const operators = [
+    {
+      value: "==",
+      text: "contains (case insensitive)",
+      useInput: true,
+      query: (key, value) => (value ? { regexp: { [key]: regexify(value) } } : null),
+      suggestionQuery: (field, value) => {
+        return {
+          query: { match_all: {} },
+          aggs: {
+            [field]: {
+              terms: { field, include: regexify(value), order: { _count: "desc" }, size: 10 }
+            }
+          },
+          size: 0
+        };
+      }
+    }
+  ];
+  return (
+    <Elasticsearch url={url}>
+      <QueryBuilder
+        id="qb"
+        fields={[{ value: "AUTR.keyword", text: "Author" }]}
+        autoComplete={true}
+        operators={operators}
+      />
+      <Results
+        id="result"
+        items={data => data.map(({ _source, _id }) => <div key={_id}>{_source.TICO}</div>)}
+      />
+    </Elasticsearch>
+  );
+};
+
+export const MultipleFields = () => {
+  return (
+    <Elasticsearch url={url}>
+      <QueryBuilder
+        id="qb"
+        fields={[
+          { value: "AUTR.keyword", text: "Author" },
+          { value: ["AUTR.keyword", "TICO.keyword"], text: "Author + TICO" }
+        ]}
+        autoComplete={true}
+      />
+      <Results
+        id="result"
+        items={data =>
+          data.map(({ _source, _id }) => (
+            <div key={_id}>
+              {_source.AUTR} - {_source.TICO}
+            </div>
+          ))
+        }
+      />
+    </Elasticsearch>
+  );
+};
+
+export const ListenChangesWithUrlParams = () => {
   const [queryString, setQueryString] = useState("");
 
   const initialValues = fromUrlQueryString(
@@ -121,4 +126,4 @@ function WithUrlParams() {
       />
     </Elasticsearch>
   );
-}
+};

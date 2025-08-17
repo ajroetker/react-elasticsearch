@@ -1,66 +1,70 @@
 import React, { useState, useEffect } from "react";
-import { storiesOf } from "@storybook/react";
 import { Elasticsearch, Results } from "../src";
 import { url } from "./utils";
 
-storiesOf("Results", module)
-  .add("vanilla", () => {
-    return (
-      <Elasticsearch url={url}>
-        <Results
-          id="result"
-          items={data =>
-            data.map(({ _source, _id, _score }) => (
-              <div key={_id}>
-                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
-              </div>
-            ))
-          }
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("with custom pagination", () => {
-    return (
-      <Elasticsearch url={url}>
-        <Results
-          id="result"
-          items={data =>
-            data.map(({ _source, _id, _score }) => (
-              <div key={_id}>
-                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
-              </div>
-            ))
-          }
-          pagination={(total, itemsPerPage, page) => (
-            <div style={{ color: "green" }}>
-              Total : {total} - ItemsPerPage : {itemsPerPage} - Page: {page} CUSTOM!
-            </div>
-          )}
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("with custom stats", () => {
-    return (
-      <Elasticsearch url={url}>
-        <Results
-          id="result"
-          items={data =>
-            data.map(({ _source, _id, _score }) => (
-              <div key={_id}>
-                <b>{_source.TICO}</b> - score: {_score} - id: {_id}
-              </div>
-            ))
-          }
-          stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
-        />
-      </Elasticsearch>
-    );
-  })
-  .add("sortable (DMIS desc)", () => <WithSortable />);
+export default {
+  title: "Results",
+  component: Results,
+};
 
-function WithSortable() {
+export const Vanilla = () => {
+  return (
+    <Elasticsearch url={url}>
+      <Results
+        id="result"
+        items={data =>
+          data.map(({ _source, _id, _score }) => (
+            <div key={_id}>
+              <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+            </div>
+          ))
+        }
+      />
+    </Elasticsearch>
+  );
+};
+
+export const WithCustomPagination = () => {
+  return (
+    <Elasticsearch url={url}>
+      <Results
+        id="result"
+        items={data =>
+          data.map(({ _source, _id, _score }) => (
+            <div key={_id}>
+              <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+            </div>
+          ))
+        }
+        pagination={(total, itemsPerPage, page) => (
+          <div style={{ color: "green" }}>
+            Total : {total} - ItemsPerPage : {itemsPerPage} - Page: {page} CUSTOM!
+          </div>
+        )}
+      />
+    </Elasticsearch>
+  );
+};
+
+export const WithCustomStats = () => {
+  return (
+    <Elasticsearch url={url}>
+      <Results
+        id="result"
+        items={data =>
+          data.map(({ _source, _id, _score }) => (
+            <div key={_id}>
+              <b>{_source.TICO}</b> - score: {_score} - id: {_id}
+            </div>
+          ))
+        }
+        stats={total => <div style={{ color: "green" }}>{total} results CUSTOM!</div>}
+      />
+    </Elasticsearch>
+  );
+};
+
+export const SortableDmisDesc = () => {
   const [sortKey, setSortKey] = useState("DMIS.keyword");
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortQuery, setSortQuery] = useState([{ [sortKey]: { order: sortOrder } }]);
@@ -96,4 +100,4 @@ function WithSortable() {
       />
     </Elasticsearch>
   );
-}
+};

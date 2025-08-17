@@ -1,9 +1,13 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import { action } from "storybook/actions";
+import { action } from "@storybook/addon-actions";
 import { Pagination } from "../src";
 
-storiesOf("Pagination", module).add("with various status", () => {
+export default {
+  title: "Pagination",
+  component: Pagination,
+};
+
+export const WithVariousStatus = () => {
   const paginations = [1, 3, 5, 12, 35, 38, 40].map(i => (
     <div style={{ display: "inline-block", verticalAlign: "top", marginRight: "20px" }} key={i}>
       <h3>On page {i}</h3>
@@ -19,4 +23,4 @@ storiesOf("Pagination", module).add("with various status", () => {
       <Pagination onChange={action("page changed")} total={25} itemsPerPage={5} page={5} />
     </div>
   );
-});
+};
