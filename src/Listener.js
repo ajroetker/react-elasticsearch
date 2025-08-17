@@ -56,8 +56,6 @@ export default function ({ children, onChange }) {
               const { itemsPerPage, page, sort } = r.configuration;
               msearchData.push({
                 query: {
-                  // TODO (ajr) Where should the table name come from?
-                  table: "example",
                   full_text_search: queryFrom(queries),
                   limit: itemsPerPage,
                   offset: (page - 1) * itemsPerPage,
@@ -104,8 +102,6 @@ export default function ({ children, onChange }) {
                   result = { ...result, ...aggFromField(f) };
                 });
                 return {
-                  // TODO (ajr) Where should the table name come from?
-                  table: "example",
                   full_text_search: queryFrom(withoutOwnQueries()),
                   size: 0,
                   facets: result,
