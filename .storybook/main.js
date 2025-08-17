@@ -1,9 +1,6 @@
 module.exports = {
-  stories: ["../stories/**/*.stories.js", "../stories/**/*.stories.mdx"],
-  addons: ["@storybook/addon-links", "@storybook/addon-docs"],
-  // core: {
-  //   builder: "webpack5",
-  // },
+  stories: ["../stories/**/*.stories.js"],
+  addons: ["@storybook/addon-links", "@storybook/addon-docs", "@storybook/addon-actions"],
   features: {
     postcss: false, // This removes the PostCSS deprecation warning
   },
@@ -12,9 +9,10 @@ module.exports = {
     options: {},
   },
   webpackFinal: async (config) => {
-    // Add babel-loader for JSX
+    // Add babel-loader for JSX in both stories and source files
     config.module.rules.push({
-      test: /\.stories\.js$/,
+      test: /\.(js|jsx)$/,
+      exclude: /node_modules/,
       use: [
         {
           loader: require.resolve("babel-loader"),
