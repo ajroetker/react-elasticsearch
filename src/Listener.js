@@ -18,7 +18,14 @@ export default function ({ children, onChange }) {
   const facetWidgets = widgetThat("isFacet");
   const searchWidgets = widgetThat("needsQuery");
   const resultWidgets = widgetThat("wantResults");
-  const queries = mapFrom("query");
+  const queries = new Map(
+    [...widgets].filter(([, v]) => v.query && !v.isSemantic).map(([k, v]) => [k, v.query])
+  );
+  const semanticQueries = new Map(
+    [...widgets]
+      .filter(([, v]) => v.query && v.isSemantic)
+      .map(([k, v]) => [k, { query: v.query, indexes: v.configuration?.indexes }])
+  );
   const configurations = mapFrom("configuration");
   const values = mapFrom("value");
 
@@ -41,11 +48,11 @@ export default function ({ children, onChange }) {
     // If you are debugging and your debug path leads you here, you might
     // check configurableWidgets and searchWidgets actually covers
     // the whole list of components that are configurables and queryable.
-    const queriesReady = queries.size === searchWidgets.size;
+    const queriesReady = queries.size + semanticQueries.size === searchWidgets.size;
     const configurationsReady = configurations.size === configurableWidgets.size;
     const isAtLeastOneWidgetReady = searchWidgets.size + configurableWidgets.size > 0;
     if (queriesReady && configurationsReady && isAtLeastOneWidgetReady) {
-      // The actual query to ES is deffered, to wait for all effects
+      // The actual query to Antfly is deffered, to wait for all effects
       // and context operations before running.
       defer(() => {
         dispatch({
@@ -54,8 +61,17 @@ export default function ({ children, onChange }) {
             const msearchData = [];
             resultWidgets.forEach((r, id) => {
               const { itemsPerPage, page, sort } = r.configuration;
+              // Join semanticQueries as a string
+              const semanticQuery = [...semanticQueries?.values().map((v) => v.query)].join(" ");
+              // Get the first indexes configured for the widget
+              const indexes = [...semanticQueries?.values().map((v) => v.indexes)].filter(
+                (i) => i && i.length
+              )[0];
+              // If there is no indexes, use the default one.
               msearchData.push({
                 query: {
+                  semantic_search: semanticQuery,
+                  indexes: semanticQuery ? indexes : undefined,
                   full_text_search: queryFrom(queries),
                   limit: itemsPerPage,
                   offset: (page - 1) * itemsPerPage,
@@ -106,7 +122,16 @@ export default function ({ children, onChange }) {
                 fields.forEach((f) => {
                   result = { ...result, ...aggFromField(f) };
                 });
+                // Join semanticQueries as a string
+                const semanticQuery = [...semanticQueries?.values().map((v) => v.query)].join(" ");
+                // Get the first indexes configured for the widget
+                const indexes = [...semanticQueries?.values().map((v) => v.indexes)].filter(
+                  (i) => i && i.length
+                )[0];
                 return {
+                  semantic_search: semanticQuery,
+                  indexes: semanticQuery ? indexes : undefined,
+                  limit: semanticQuery ? 100 : 0,
                   full_text_search: queryFrom(withoutOwnQueries()),
                   size: 0,
                   facets: result,
@@ -158,7 +183,8 @@ export default function ({ children, onChange }) {
                 result.responses.forEach((response, key) => {
                   const widget = widgets.get(msearchData[key].id);
                   if (response.status !== 200) {
-                    console.error(response.error.reason);
+                    // console.error(response.error.reason);
+                    console.error(response.error);
                     return;
                   }
 
@@ -178,7 +204,11 @@ export default function ({ children, onChange }) {
         });
       });
     }
-  }, [JSON.stringify(Array.from(queries)), JSON.stringify(Array.from(configurations))]);
+  }, [
+    JSON.stringify(Array.from(queries)),
+    JSON.stringify(Array.from(semanticQueries)),
+    JSON.stringify(Array.from(configurations)),
+  ]);
 
   return <>{children}</>;
 }

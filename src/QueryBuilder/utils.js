@@ -23,7 +23,7 @@ export function mergedQueries(queries) {
 function query(key, value, cb, shouldOrMust = "should") {
   if (Array.isArray(key)) {
     const junct = shouldOrMust === "should" ? "disjuncts" : "conjuncts";
-    return { [shouldOrMust]: { junct: key.map((k) => cb(k, value)) } };
+    return { [shouldOrMust]: { [junct]: key.map((k) => cb(k, value)) } };
   }
   return cb(key, value);
 }
@@ -33,7 +33,7 @@ export const defaultOperators = [
     value: "==",
     text: "equals",
     useInput: true,
-    query: (key, value) => value && query(key, value, (k, v) => ({ field: k, term: v })),
+    query: (key, value) => value && query(key, value, (k, v) => ({ field: k, match: v })),
   },
   {
     value: "!=",
@@ -123,7 +123,6 @@ export const defaultOperators = [
         (k, v) => ({
           must_not: { disjuncts: [{ field: k.replace(/\.keyword$/, ""), wildcard: `*${v}*` }] },
         }),
-
         "must"
       ),
   },

@@ -4,6 +4,10 @@ import { useSharedContext } from "../SharedContextProvider";
 import { msearch } from "../utils";
 
 export default function Rule({ fields, operators, combinators, ...props }) {
+  fields = fields.map((f) => {
+    if (f?.endsWith?.(".keyword")) f = f.replace(/\.keyword$/, "");
+    return f;
+  });
   const [{ url, headers }] = useSharedContext();
   const [combinator, setCombinator] = useState(props.combinator);
   const [field, setField] = useState(props.field);
@@ -48,11 +52,16 @@ export default function Rule({ fields, operators, combinators, ...props }) {
             if (suggestionQuery) {
               query = suggestionQuery(field, value);
             } else {
-              const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
-              query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
+              // const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
+              // query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
+              query = {
+                // Bleve's default analyzer is case insensitive, so we can use regexp.
+                full_text_search: { field, regexp: `.*${value.toLowerCase()}.*` },
+                size: 10,
+              };
             }
             const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
-            setSuggestions(suggestions.responses[0].aggregations[field].buckets.map((e) => e.key));
+            setSuggestions(suggestions.responses[0].hits.hits?.map((e) => e._source[field]) || []);
           }}
           onSuggestionsClearRequested={() => setSuggestions([])}
           getSuggestionValue={(suggestion) => suggestion}

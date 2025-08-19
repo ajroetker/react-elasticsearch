@@ -18,7 +18,7 @@ export default {
 export const BasicUsage = () => {
   return (
     <Antfly url={url}>
-      <SearchBox id="main" customQuery={customQuery} />
+      <SearchBox id="main" isSemantic={true} semanticIndexes={["full_nomic"]} />
       <div style={{ display: "inline-block" }}>
         <Facet id="author" fields={["AUTR.keyword"]} />
       </div>

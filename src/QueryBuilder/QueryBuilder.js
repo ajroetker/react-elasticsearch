@@ -21,6 +21,10 @@ export default function QueryBuilder({
   const [, dispatch] = useSharedContext();
   operators = operators || defaultOperators;
   combinators = combinators || defaultCombinators;
+  fields = fields.map((f) => {
+    if (f?.endsWith?.(".keyword")) f = f.replace(/\.keyword$/, "");
+    return f;
+  });
   templateRule = templateRule || {
     field: fields[0].value,
     operator: operators[0].value,

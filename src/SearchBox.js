@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useSharedContext } from "./SharedContextProvider";
 
-export default function ({ customQuery, fields, id, initialValue, placeholder }) {
+export default function ({
+  customQuery,
+  fields,
+  id,
+  initialValue,
+  placeholder,
+  isSemantic,
+  semanticIndexes,
+}) {
   const [{ widgets }, dispatch] = useSharedContext();
   const [value, setValue] = useState(initialValue || "");
 
@@ -18,6 +26,7 @@ export default function ({ customQuery, fields, id, initialValue, placeholder })
 
   // Build a query from a value.
   function queryFromValue(query) {
+    if (isSemantic) return query;
     if (customQuery) {
       return customQuery(query);
     } else if (fields) {
@@ -39,12 +48,13 @@ export default function ({ customQuery, fields, id, initialValue, placeholder })
       type: "setWidget",
       key: id,
       needsQuery: true,
-      needsConfiguration: false,
+      needsConfiguration: isSemantic,
       isFacet: false,
+      isSemantic: isSemantic,
       wantResults: false,
       query: queryFromValue(v),
       value: v,
-      configuration: null,
+      configuration: isSemantic ? { indexes: semanticIndexes || [] } : null,
       result: null,
     });
   }
