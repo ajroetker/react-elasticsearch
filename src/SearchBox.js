@@ -9,6 +9,7 @@ export default function ({
   placeholder,
   isSemantic,
   semanticIndexes,
+  limit,
 }) {
   const [{ widgets }, dispatch] = useSharedContext();
   const [value, setValue] = useState(initialValue || "");
@@ -54,7 +55,7 @@ export default function ({
       wantResults: false,
       query: queryFromValue(v),
       value: v,
-      configuration: isSemantic ? { indexes: semanticIndexes || [] } : null,
+      configuration: isSemantic ? { indexes: semanticIndexes || [], limit: limit || 10 } : null,
       result: null,
     });
   }

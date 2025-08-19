@@ -65,19 +65,19 @@ export const WithCustomStats = () => {
 };
 
 export const SortableDmisDesc = () => {
-  const [sortKey, setSortKey] = useState("DMIS.keyword");
+  const [sortKey, setSortKey] = useState("DMIS");
   const [sortOrder, setSortOrder] = useState("desc");
   const [sortQuery, setSortQuery] = useState([{ [sortKey]: { order: sortOrder } }]);
 
   useEffect(() => {
-    setSortQuery([{ [sortKey]: { order: sortOrder } }]);
+    setSortQuery({ [sortKey]: sortOrder == "desc" });
   }, [sortKey, sortOrder]);
 
   return (
     <Antfly url={url}>
       Sort by:{" "}
       <select onChange={(e) => setSortKey(e.target.value)} value={sortKey}>
-        {["AUTR.keyword", "DMIS.keyword", "DMAJ.keyword", "TICO.keyword"].map((e) => (
+        {["AUTR", "DMIS", "DMAJ", "TICO"].map((e) => (
           <option key={e} value={e}>
             {e.replace(".keyword", "")}
           </option>

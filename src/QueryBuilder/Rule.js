@@ -55,13 +55,27 @@ export default function Rule({ fields, operators, combinators, ...props }) {
               // const terms = { field, include: `.*${value}.*`, order: { _count: "desc" }, size: 10 };
               // query = { query: { match_all: {} }, aggs: { [field]: { terms } }, size: 0 };
               query = {
-                // Bleve's default analyzer is case insensitive, so we can use regexp.
-                full_text_search: { field, regexp: `.*${value.toLowerCase()}.*` },
-                size: 10,
+                // Bleve's default analyzer is case insensitive.
+                full_text_search: {
+                  conjuncts: [
+                    { field, prefix: `${value.toLowerCase()}`, boost: 2 },
+                    { field, regexp: `.*${value.toLowerCase()}.*`, boost: 1.5 },
+                  ],
+                },
+                limit: 10,
               };
             }
-            const suggestions = await msearch(url, [{ query, id: "queryBuilder" }], headers);
-            setSuggestions(suggestions.responses[0].hits.hits?.map((e) => e._source[field]) || []);
+            const suggestions = await msearch(
+              url,
+              [{ query, id: "queryBuilder", fields: [field] }],
+              headers
+            );
+            const response = suggestions.responses[0];
+            if (response.status !== 200) {
+              console.error(response.error);
+              return;
+            }
+            setSuggestions(response.hits.hits?.map((e) => e._source[field]) || []);
           }}
           onSuggestionsClearRequested={() => setSuggestions([])}
           getSuggestionValue={(suggestion) => suggestion}

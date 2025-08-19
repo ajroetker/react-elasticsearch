@@ -24,7 +24,10 @@ export default function ({ children, onChange }) {
   const semanticQueries = new Map(
     [...widgets]
       .filter(([, v]) => v.query && v.isSemantic)
-      .map(([k, v]) => [k, { query: v.query, indexes: v.configuration?.indexes }])
+      .map(([k, v]) => [
+        k,
+        { query: v.query, indexes: v.configuration?.indexes, limit: v.configuration?.limit },
+      ])
   );
   const configurations = mapFrom("configuration");
   const values = mapFrom("value");
@@ -75,7 +78,7 @@ export default function ({ children, onChange }) {
                   full_text_search: queryFrom(queries),
                   limit: itemsPerPage,
                   offset: (page - 1) * itemsPerPage,
-                  sort,
+                  order_by: sort,
                 },
                 data: (result) => result.hits.hits,
                 total: (result) => result.hits.total,
@@ -128,12 +131,12 @@ export default function ({ children, onChange }) {
                 const indexes = [...semanticQueries?.values().map((v) => v.indexes)].filter(
                   (i) => i && i.length
                 )[0];
+                const limit = [...semanticQueries?.values().map((v) => v.limit)][0] || 10;
                 return {
                   semantic_search: semanticQuery,
                   indexes: semanticQuery ? indexes : undefined,
-                  limit: semanticQuery ? 100 : 0,
+                  limit: semanticQuery ? limit : 0,
                   full_text_search: queryFrom(withoutOwnQueries()),
-                  size: 0,
                   facets: result,
                 };
               }

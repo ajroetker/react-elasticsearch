@@ -18,7 +18,31 @@ export default {
 export const BasicUsage = () => {
   return (
     <Antfly url={url}>
-      <SearchBox id="main" isSemantic={true} semanticIndexes={["full_nomic"]} />
+      <SearchBox id="main" customQuery={customQuery} />
+      <div style={{ display: "inline-block" }}>
+        <Facet id="author" fields={["AUTR.keyword"]} />
+      </div>
+      <div style={{ display: "inline-block" }}>
+        <Facet id="domn" fields={["DOMN.keyword"]} />
+      </div>
+      <Results
+        id="result"
+        items={(data) =>
+          data.map(({ _source, _score, _id }) => (
+            <div key={_id}>
+              <b>{_source.TICO}</b> - score: {_score}
+            </div>
+          ))
+        }
+      />
+    </Antfly>
+  );
+};
+
+export const SemanticSearch = () => {
+  return (
+    <Antfly url={url}>
+      <SearchBox id="main" isSemantic={true} semanticIndexes={["full_nomic"]} limit={10} />
       <div style={{ display: "inline-block" }}>
         <Facet id="author" fields={["AUTR.keyword"]} />
       </div>
@@ -42,7 +66,7 @@ export const BasicUsage = () => {
 export const WithUrlParams = () => {
   const [queryString, setQueryString] = useState("");
 
-  const initialValues = fromUrlQueryString("main=%22h%22&resultPage=2");
+  const initialValues = fromUrlQueryString("main=%22de%22&resultPage=2");
   return (
     <Antfly
       url={url}

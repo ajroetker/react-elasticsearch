@@ -5,11 +5,11 @@ import qs from "qs";
 // Todo reject.
 export async function msearch(url, msearchData, headers = {}) {
   headers = {
-    Accept: "application/json", 
+    Accept: "application/json",
     "Content-Type": "application/x-ndjson",
     ...headers,
   };
-  const body = msearchData.map(val => JSON.stringify(val.query)).join('\n') + '\n';
+  const body = msearchData.map((val) => JSON.stringify(val.query)).join("\n") + "\n";
   const rawResponse = await fetch(`${url}/query`, { method: "POST", headers, body });
   return rawResponse.json();
 }
@@ -21,12 +21,12 @@ export function queryFrom(queries) {
 
 // Convert fields to term queries
 export function toTermQueries(fields = [], selectedValues = []) {
-  const queries = fields.flatMap(field => 
-    selectedValues.map(value => {
+  const queries = fields.flatMap((field) =>
+    selectedValues.map((value) => {
       // If the field has the suffix .keyword, we use a term query
       // (exact match). Otherwise we use a match query (full text).
       if (field?.endsWith?.(".keyword")) {
-        return { field: field.replace(/\.keyword$/, ""), term: value };
+        return { field: field.replace(/\.keyword$/, ""), match: value };
       }
       return { field, match: value };
     })
@@ -53,7 +53,7 @@ export function toUrlQueryString(params) {
   return qs.stringify(
     Object.fromEntries(
       Array.from(params)
-        .filter(([, v]) => Array.isArray(v) ? v.length : v)
+        .filter(([, v]) => (Array.isArray(v) ? v.length : v))
         .map(([k, v]) => [k, JSON.stringify(v)])
     )
   );
