@@ -16,7 +16,7 @@ export async function msearch(url, msearchData, headers = {}) {
 
 // Build a query from a Map of queries
 export function queryFrom(queries) {
-  return queries?.size === 0 ? { match_all: {} } : { conjuncts: Array.from(queries.values()) };
+  return queries?.size === 0 ? { match_none: {} } : { conjuncts: Array.from(queries.values()) };
 }
 
 // Convert fields to term queries

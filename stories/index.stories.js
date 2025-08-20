@@ -88,6 +88,27 @@ export const WithUrlParams = () => {
   );
 };
 
+export const Wikipedia = () => {
+  return (
+    <Antfly url={"http://localhost:8080/table/wikipedia"}>
+      <SearchBox id="main" isSemantic={true} semanticIndexes={["body_nomic"]} limit={10} />
+      <ActiveFilters id="af" />
+      <Results
+        id="result"
+        items={(data) =>
+          data.map(({ _source, _score, _id }) => (
+            <div key={_id}>
+              <a href={_source.url} target="_blank" rel="noopener noreferrer">
+                {_source.title}
+              </a>
+            </div>
+          ))
+        }
+      />
+    </Antfly>
+  );
+};
+
 export const MovieDatabase = () => {
   return (
     <Antfly
