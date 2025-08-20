@@ -2,15 +2,15 @@
 
 [![Version](https://img.shields.io/npm/v/react-antfly.svg)](https://npmjs.org/package/react-antfly)
 [![Downloads](https://img.shields.io/npm/dt/react-antfly.svg)](https://npmjs.org/package/react-antfly)
-[![License](https://img.shields.io/npm/l/react-antfly.svg)](https://github.com/rap2hpoutre/react-antfly/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/react-antfly.svg)](https://github.com/antflydb/react-antfly/blob/master/package.json)
 
 UI components for React + Antfly. Create search applications using declarative components.
 ## Usage
-**👉 [Documentation and playable demo available here](https://react-elasticsearch.raph.site/).**
+**[Documentation about Antfly](https://docs.antfly.io).**
 
 ```jsx
 const MySearchComponent = () => (
-  <Antfly url="http://example.org/search">
+  <Antfly url="http://<antfly_url>/table/movies">
     <SearchBox id="mainSearch" fields={["title"]} />
     <Facet id="actors" fields={["actors"]} />
     <Facet id="releasedYear" fields={["releasedYear"]} />
@@ -42,25 +42,16 @@ npm run storybook
 
 ## Main features
 
-- 🏝 Released under **MIT licence**.
-- 👩‍🎨 Each component is built with React and is **customisable**. Not too much extra features nor magic.
-- 💅 It comes with **no style** so it's the developers responsibility to implement their own.
-- 🐿 **35.32KB gzipped** for the whole lib, compatible with old browsers: >0.03% usage.
-- 🔮 No legacy: **created in 2019**, **updated in 2021** with hooks.
+- Released under **MIT licence**.
+- Each component is built with React and is **customisable**. Not too much extra features nor magic.
+- It comes with **no style** so it's the developers responsibility to implement their own.
+- **35.32KB gzipped** for the whole lib, compatible with old browsers: >0.03% usage.
 
-## Why?
+## Acknowledgements
 
-We started building the search experience
-of the french [Cultural Heritage Open Platform](https://www.pop.culture.gouv.fr/)
-with [ReactiveSearch](https://opensource.appbase.io/reactivesearch/), a well-known
-search UI components lib for React.
-After some weeks, we realized we had spent a lot of time tweaking and hacking the lib;
-we had rewrote almost every components ourselves. We opened issues and pull requests on the repository,
-but it seemed the lib was a bit stuck in a rewrite process.
-We found out that we need a simple lib that can be easily extended with a similar API,
-we created this one. This lib has many less feature than others, it's not even a decent competitor.
-But since it helped us building a search experiences, it has been released. Hope it could help you!
+This work is based off the awesome work by [react-elasticsearch](https://github.com/betagouv/react-elasticsearch).
+
 
 ## Contributing
 
-Open issues and PR here: https://github.com/betagouv/react-antfly
+Open issues and PR here: https://github.com/antflydb/react-antfly
